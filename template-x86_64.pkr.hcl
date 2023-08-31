@@ -16,44 +16,53 @@ variable "hcloud_token" {
   default   = env("HCLOUD_TOKEN")
   sensitive = true
 }
-
-variable "coreos_stream" {
+variable "hcloud_location" {
   type    = string
-  default = "stable"
-}
-variable "coreos_release" {
-  type    = string
-  default = "38.20230806.3.0"
-}
-
-data "external-raw" "ignition_config" {
-  program = ["butane", "-d", "${path.cwd}/files", "--strict", "${path.cwd}/files/chain.bu"]
+  default = "fsn1"
 }
 
 locals {
-  image        = "coreos-${split(".", var.coreos_release)[0]}"
-  coreos_image = "https://builds.coreos.fedoraproject.org/prod/streams/${var.coreos_stream}/builds/${var.coreos_release}/x86_64/fedora-coreos-${var.coreos_release}-metal.x86_64.raw.xz"
+  ### Configuration
+  coreos_stream = "stable"
+  # https://fedoraproject.org/coreos/download/?stream=stable
+  coreos_release = "38.20230806.3.0"
+  ### /Configuration
+
+  coreos_image = "https://builds.coreos.fedoraproject.org/prod/streams/${local.coreos_stream}/builds/${local.coreos_release}/x86_64/fedora-coreos-${local.coreos_release}-metal.x86_64.raw.xz"
+  image        = "coreos-${split(".", local.coreos_release)[0]}"
   build_id     = "${uuidv4()}"
   build_labels = {
     "image"                = "${local.image}",
     "os-flavor"            = "coreos"
-    "coreos/stream"        = "${var.coreos_stream}"
-    "coreos/release"       = "${var.coreos_release}"
+    "coreos/stream"        = "${local.coreos_stream}"
+    "coreos/release"       = "${local.coreos_release}"
     "packer.io/build.id"   = "${local.build_id}"
     "packer.io/build.time" = "{{timestamp}}"
     "packer.io/version"    = "{{packer_version}}"
   }
 }
 
+# Generate Ignition config from Butane file
+data "external-raw" "ignition_config" {
+  program = ["butane", "-d", "${path.cwd}/files", "--strict", "${path.cwd}/files/chain.bu"]
+}
+
 source "hcloud" "coreos" {
-  image           = "fedora-38"
-  location        = "fsn1"
-  server_type     = "cx11"
+  # We use a fedora image but it really doesn't matter since we're booting in
+  # rescue mode anyway
+  image        = "fedora-38"
+  rescue       = "linux64"
+  ssh_username = "root"
+
   snapshot_labels = local.build_labels
-  snapshot_name   = "coreos-{{ timestamp }}"
-  ssh_username    = "root"
-  token           = var.hcloud_token
-  rescue          = "linux64"
+  snapshot_name   = "${local.image}-{{ timestamp }}"
+
+  token    = var.hcloud_token
+  location = var.hcloud_location
+  # The smallest one available so we can later provision any server type
+  server_type = "cx11"
+
+  temporary_key_pair_type = "ed25519"
 }
 
 build {
@@ -62,7 +71,9 @@ build {
   provisioner "shell" {
     inline = [
       "set -x",
+      # Install CoreOS
       "curl -sL '${local.coreos_image}' | xz -d | dd of=/dev/sda",
+      # Mount the /boot partition
       "mount /dev/sda3 /mnt",
       "mkdir -p /mnt/ignition"
     ]

@@ -9,8 +9,8 @@ fmt:  ## Format all files
 .PHONY: build
 build: packer-manifest.json  ## Build the Image
 
-packer-manifest.json: coreos.pkr.hcl
-	packer build coreos.pkr.hcl
+packer-manifest.json: template-x86_64.pkr.hcl
+	packer build ./template-x86_64.pkr.hcl
 
 .PHONY: clean
 clean:  ## Remove all generated files
