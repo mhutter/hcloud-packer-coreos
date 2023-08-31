@@ -7,11 +7,9 @@ fmt:  ## Format all files
 	packer fmt .
 
 .PHONY: build
-build: packer-manifest.json  ## Build the Image
-
-packer-manifest.json: template-x86_64.pkr.hcl
+build:
 	packer build ./template-x86_64.pkr.hcl
 
 .PHONY: clean
 clean:  ## Remove all generated files
-	rm -vf *.ign
+	rm -vf *.ign $(MANIFEST)
