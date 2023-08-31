@@ -1,0 +1,23 @@
+variant: fcos
+version: 1.5.0
+
+# Load config from the Hetzner metadata service
+ignition:
+  config:
+    merge:
+      - source: http://169.254.169.254/hetzner/v1/userdata
+
+storage:
+  files:
+    # Configure Hostname
+    - path: /etc/hostname
+      overwrite: true
+      contents:
+        source: http://169.254.169.254/hetzner/v1/metadata/hostname
+
+systemd:
+  units:
+    # Update user SSH key
+    - name: update-authorized-keys.service
+      enabled: true
+      contents_local: update-authorized-keys.service

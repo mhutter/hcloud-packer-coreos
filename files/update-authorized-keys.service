@@ -1,0 +1,24 @@
+[Unit]
+Description=Fetch SSH authorized keys
+Wants=network-online.target
+After=network-online.target
+
+# Don't run if the file already exists
+ConditionPathExists=!/var/home/core/.ssh/authorized_keys
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+# Ensure the SSH directory exists & has correct permissions
+ExecStart=install --directory --mode=0700 --owner=core --group=core /var/home/core/.ssh
+
+# Download & extract SSH public keys from the metadata endpoint
+ExecStart=/bin/sh -c "curl -s 'http://169.254.169.254/hetzner/v1/metadata/public-keys' | jq -r 'join(.)' > /var/home/core/.ssh/authorized_keys"
+
+# Fix permissions on authorized_keys file
+ExecStart=chmod 600 /var/home/core/.ssh/authorized_keys
+ExecStart=chown core:core /var/home/core/.ssh/authorized_keys
+
+[Install]
+WantedBy=multi-user.target
