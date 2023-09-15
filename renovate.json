@@ -8,7 +8,7 @@
         "coreos_release = \"(?<currentValue>\\S+)\""
       ],
       "depNameTemplate": "coreos",
-      "datasourceTemplate": "coreos"
+      "datasourceTemplate": "custom.coreos"
     }
   ],
   "customDatasources": {
