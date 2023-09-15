@@ -1,0 +1,22 @@
+{
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "template-x86_64.pkr.hcl"
+      ],
+      "matchStrings": [
+        "coreos_release = \"(?<currentValue>\\S+)\""
+      ],
+      "depNameTemplate": "coreos",
+      "datasourceTemplate": "coreos"
+    }
+  ],
+  "customDatasources": {
+    "coreos": {
+      "defaultRegistryUrlTemplate": "https://builds.coreos.fedoraproject.org/streams/stable.json",
+      "transformTemplates": [
+        "{\"releases\": [{\"version\": $$.(architectures.x86_64.artifacts.metal.release),\"changelogUrl\": \"https://fedoraproject.org/coreos/release-notes/?arch=x86_64&stream=stable\"}]}"
+      ]
+    }
+  }
+}
