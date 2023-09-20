@@ -25,7 +25,7 @@ locals {
   ### Configuration
   coreos_stream = "stable"
   # https://fedoraproject.org/coreos/download/?stream=stable
-  coreos_release = "38.20230806.3.0"
+  coreos_release = "38.20230902.3.0"
   ### /Configuration
 
   coreos_image = "https://builds.coreos.fedoraproject.org/prod/streams/${local.coreos_stream}/builds/${local.coreos_release}/x86_64/fedora-coreos-${local.coreos_release}-metal.x86_64.raw.xz"
