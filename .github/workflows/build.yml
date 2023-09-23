@@ -20,4 +20,4 @@ jobs:
         run: packer init .
 
       - name: packer build
-        run: packer .
+        run: packer build -timestamp-ui .
