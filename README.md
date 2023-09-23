@@ -9,6 +9,7 @@ This template builds a fully functioning Fedora CoreOS image on [Hetzner Cloud](
 - Support for Ignition configs provided via user data
 - Automatic configuration of SSH public keys for `core` user
 - Hostname configuration
+- Support for both `x86 (Intel/AMD)` and `Arm64 (Ampere)`
 
 
 ## Usage
