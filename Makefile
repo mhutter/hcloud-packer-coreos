@@ -7,15 +7,9 @@ fmt:  ## Format all files
 	packer fmt .
 
 .PHONY: build
-build:
-	packer build ./template-x86_64.pkr.hcl
+build:  ## Build all images
+	packer build .
 
 .PHONY: clean
 clean:  ## Remove all generated files
 	rm -vf *.ign $(MANIFEST)
-
-.PHONY: cleanup-images
-cleanup-images:  ## Delete all but the latest image. Assumes that Image IDs only increase over time
-	hcloud image list -t snapshot -l os-flavor=coreos -o json | \
-		jq 'sort_by(.created)[:-1][].id' | \
-		xargs -n1 hcloud image delete
