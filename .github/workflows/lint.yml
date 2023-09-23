@@ -1,0 +1,22 @@
+name: Packer lint
+
+on:
+  pull_request: {}
+
+env:
+  HCLOUD_TOKEN: dummy-value-for-packer-lint
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: packer init
+        run: packer init .
+
+      - name: packer fmt
+        run: packer fmt -check -diff -recursive .
+
+      - name: packer validate
+        run: packer validate .
