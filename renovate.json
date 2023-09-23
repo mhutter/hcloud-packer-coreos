@@ -6,7 +6,7 @@
   "regexManagers": [
     {
       "fileMatch": [
-        "template-x86_64.pkr.hcl"
+        "\\.pkr\\.hcl$"
       ],
       "matchStrings": [
         "coreos_release = \"(?<currentValue>\\S+)\""
