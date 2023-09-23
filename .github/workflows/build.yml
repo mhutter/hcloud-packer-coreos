@@ -1,0 +1,23 @@
+name: Packer build
+
+on:
+  push:
+    branches: [main]
+
+env:
+  HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://hetzner.cloud/?ref=72AtIaBWO7Uw  # 🤡
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: packer init
+        run: packer init .
+
+      - name: packer build
+        run: packer .
