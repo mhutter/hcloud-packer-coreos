@@ -14,6 +14,13 @@ jobs:
       name: production
       url: https://hetzner.cloud/?ref=72AtIaBWO7Uw  # 🤡
     steps:
+      - name: Install Butane
+        run: |
+          podman create --name butane quay.io/coreos/butane:release
+          podman cp butane:/usr/local/bin/butane /usr/local/bin/
+          podman rm -f butane
+          butane --version
+
       - uses: actions/checkout@v4
 
       - name: packer init
