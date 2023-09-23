@@ -28,9 +28,8 @@ locals {
   coreos_release = "38.20230902.3.0"
   ### /Configuration
 
-  coreos_image = "https://builds.coreos.fedoraproject.org/prod/streams/${local.coreos_stream}/builds/${local.coreos_release}/x86_64/fedora-coreos-${local.coreos_release}-metal.x86_64.raw.xz"
-  image        = "coreos-${split(".", local.coreos_release)[0]}"
-  build_id     = "${uuidv4()}"
+  image    = "coreos-${split(".", local.coreos_release)[0]}"
+  build_id = "${uuidv4()}"
   build_labels = {
     "image"                = "${local.image}",
     "os-flavor"            = "coreos"
@@ -44,10 +43,10 @@ locals {
 
 # Generate Ignition config from Butane file
 data "external-raw" "ignition_config" {
-  program = ["butane", "-d", "${path.cwd}/files", "--strict", "${path.cwd}/files/chain.bu"]
+  program = ["butane", "-d", "${path.root}/files", "--strict", "${path.root}/files/chain.bu"]
 }
 
-source "hcloud" "coreos" {
+source "hcloud" "aarch64" {
   # We use a fedora image but it really doesn't matter since we're booting in
   # rescue mode anyway
   image        = "fedora-38"
@@ -55,7 +54,25 @@ source "hcloud" "coreos" {
   ssh_username = "root"
 
   snapshot_labels = local.build_labels
-  snapshot_name   = "${local.image}-{{ timestamp }}"
+  snapshot_name   = "${local.image}-{{timestamp}}"
+
+  token    = var.hcloud_token
+  location = var.hcloud_location
+  # The smallest one available so we can later provision any server type
+  server_type = "cax11"
+
+  temporary_key_pair_type = "ed25519"
+}
+
+source "hcloud" "x86_64" {
+  # We use a fedora image but it really doesn't matter since we're booting in
+  # rescue mode anyway
+  image        = "fedora-38"
+  rescue       = "linux64"
+  ssh_username = "root"
+
+  snapshot_labels = local.build_labels
+  snapshot_name   = "${local.image}-{{timestamp}}"
 
   token    = var.hcloud_token
   location = var.hcloud_location
@@ -66,13 +83,16 @@ source "hcloud" "coreos" {
 }
 
 build {
-  sources = ["source.hcloud.coreos"]
+  sources = ["source.hcloud.aarch64", "source.hcloud.x86_64"]
 
   provisioner "shell" {
+    env = {
+      "COREOS_IMAGE" = "https://builds.coreos.fedoraproject.org/prod/streams/${local.coreos_stream}/builds/${local.coreos_release}/${source.name}/fedora-coreos-${local.coreos_release}-metal.${source.name}.raw.xz"
+    }
     inline = [
       "set -x",
       # Install CoreOS
-      "curl -sL '${local.coreos_image}' | xz -d | dd of=/dev/sda",
+      "curl -sL \"$COREOS_IMAGE\" | xz -d | dd of=/dev/sda",
       # Mount the /boot partition
       "mount /dev/sda3 /mnt",
       "mkdir -p /mnt/ignition"
@@ -89,9 +109,5 @@ build {
       "sync",
       "echo Installation complete",
     ]
-  }
-
-  post-processor "manifest" {
-    custom_data = local.build_labels
   }
 }
