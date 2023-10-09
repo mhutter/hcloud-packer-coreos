@@ -27,4 +27,4 @@ jobs:
         run: packer init .
 
       - name: packer build
-        run: packer build -timestamp-ui .
+        run: packer build .
