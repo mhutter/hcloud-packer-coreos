@@ -25,7 +25,7 @@ locals {
   ### Configuration
   coreos_stream = "stable"
   # https://fedoraproject.org/coreos/download/?stream=stable
-  coreos_release = "38.20230918.3.0"
+  coreos_release = "38.20231002.3.1"
   ### /Configuration
 
   image    = "coreos-${split(".", local.coreos_release)[0]}"
