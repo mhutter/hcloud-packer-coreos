@@ -51,4 +51,4 @@ We work around this by applying a few hacks (see [`files/chain.bu`](./files/chai
 
 ## Further Reading
 
-- [Hetzner Cloud Builder for Packer](https://developer.hashicorp.com/packer/plugins/builders/hetzner-cloud)
+- [Hetzner Cloud Builder for Packer](https://developer.hashicorp.com/packer/integrations/hetznercloud/hcloud)
