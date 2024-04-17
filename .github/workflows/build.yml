@@ -1,8 +1,7 @@
 name: Packer build
 
 on:
-  push:
-    branches: [main]
+  push: {}
 
 env:
   HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
@@ -11,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment:
-      name: production
+      name: ${{ github.ref_name }}
       url: https://hetzner.cloud/?ref=72AtIaBWO7Uw  # 🤡
     steps:
       - name: Install Butane
