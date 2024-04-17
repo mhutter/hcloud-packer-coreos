@@ -19,7 +19,9 @@ jobs:
           podman create --name butane quay.io/coreos/butane:release
           podman cp butane:/usr/local/bin/butane /usr/local/bin/
           podman rm -f butane
-          butane --version
+
+      - name: Check toolchain versions
+        run: butane --version; packer version
 
       - uses: actions/checkout@v4
 
