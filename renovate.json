@@ -3,6 +3,12 @@
   "extends": [
     "local>mhutter/.github:renovate-config"
   ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ],
   "regexManagers": [
     {
       "fileMatch": [
