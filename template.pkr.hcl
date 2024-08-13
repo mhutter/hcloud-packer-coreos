@@ -1,12 +1,12 @@
 packer {
   required_plugins {
     external = {
-      version = ">= 0.0.2"
       source  = "github.com/joomcode/external"
+      version = "0.0.2"
     }
     hcloud = {
-      version = ">= 1.0.5"
       source  = "github.com/hashicorp/hcloud"
+      version = "1.5.0"
     }
   }
 }
