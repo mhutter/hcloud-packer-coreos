@@ -28,7 +28,8 @@ locals {
   coreos_release = "40.20240709.3.1"
   ### /Configuration
 
-  image    = "coreos-${split(".", local.coreos_release)[0]}"
+  major    = split(".", local.coreos_release)[0]
+  image    = "coreos-${local.major}"
   build_id = "${uuidv4()}"
   build_labels = {
     "image"                = "${local.image}",
@@ -49,7 +50,7 @@ data "external-raw" "ignition_config" {
 source "hcloud" "aarch64" {
   # We use a fedora image but it really doesn't matter since we're booting in
   # rescue mode anyway
-  image        = "fedora-38"
+  image        = "fedora-${local.major}"
   rescue       = "linux64"
   ssh_username = "root"
 
@@ -67,7 +68,7 @@ source "hcloud" "aarch64" {
 source "hcloud" "x86_64" {
   # We use a fedora image but it really doesn't matter since we're booting in
   # rescue mode anyway
-  image        = "fedora-38"
+  image        = "fedora-${local.major}"
   rescue       = "linux64"
   ssh_username = "root"
 
