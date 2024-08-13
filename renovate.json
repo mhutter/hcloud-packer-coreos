@@ -3,7 +3,7 @@
   "extends": ["local>mhutter/.github:renovate-config"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["coreos"],
       "automerge": true
     }
   ],
