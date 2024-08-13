@@ -1,22 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>mhutter/.github:renovate-config"
-  ],
+  "extends": ["local>mhutter/.github:renovate-config"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["coreos"],
       "automerge": true
     }
   ],
   "regexManagers": [
     {
-      "fileMatch": [
-        "\\.pkr\\.hcl$"
-      ],
-      "matchStrings": [
-        "coreos_release = \"(?<currentValue>\\S+)\""
-      ],
+      "fileMatch": ["\\.pkr\\.hcl$"],
+      "matchStrings": ["coreos_release = \"(?<currentValue>\\S+)\""],
       "depNameTemplate": "coreos",
       "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)$",
       "datasourceTemplate": "custom.coreos-stable"
@@ -26,7 +20,7 @@
     "coreos-stable": {
       "defaultRegistryUrlTemplate": "https://builds.coreos.fedoraproject.org/streams/stable.json",
       "transformTemplates": [
-        "{\"releases\": [{\"version\": $$.(architectures.x86_64.artifacts.metal.release),\"changelogUrl\": \"https://fedoraproject.org/coreos/release-notes/?arch=x86_64&stream=stable\"}]}"
+        "{\"releases\": [{\"version\": $$.(architectures.aarch64.artifacts.metal.release),\"changelogUrl\": \"https://fedoraproject.org/coreos/release-notes/?arch=aarch64&stream=stable\"}]}"
       ]
     }
   }
