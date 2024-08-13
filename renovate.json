@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>mhutter/.github:renovate-config"
-  ],
+  "extends": ["local>mhutter/.github:renovate-config"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
@@ -11,12 +9,8 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": [
-        "\\.pkr\\.hcl$"
-      ],
-      "matchStrings": [
-        "coreos_release = \"(?<currentValue>\\S+)\""
-      ],
+      "fileMatch": ["\\.pkr\\.hcl$"],
+      "matchStrings": ["coreos_release = \"(?<currentValue>\\S+)\""],
       "depNameTemplate": "coreos",
       "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)$",
       "datasourceTemplate": "custom.coreos-stable"
