@@ -29,7 +29,7 @@ locals {
   ### /Configuration
 
   major    = split(".", local.coreos_release)[0]
-  image    = "coreos-${local.major}"
+  image    = "coreos-${local.coreos_release}"
   build_id = "${uuidv4()}"
   build_labels = {
     "image"                = "${local.image}",
