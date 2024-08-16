@@ -65,26 +65,8 @@ source "hcloud" "aarch64" {
   temporary_key_pair_type = "ed25519"
 }
 
-source "hcloud" "x86_64" {
-  # We use a fedora image but it really doesn't matter since we're booting in
-  # rescue mode anyway
-  image        = "fedora-${local.major}"
-  rescue       = "linux64"
-  ssh_username = "root"
-
-  snapshot_labels = local.build_labels
-  snapshot_name   = "${local.image}-{{timestamp}}"
-
-  token    = var.hcloud_token
-  location = var.hcloud_location
-  # The smallest one available so we can later provision any server type
-  server_type = "cx11"
-
-  temporary_key_pair_type = "ed25519"
-}
-
 build {
-  sources = ["source.hcloud.aarch64", "source.hcloud.x86_64"]
+  sources = ["source.hcloud.aarch64"]
 
   provisioner "shell" {
     env = {
