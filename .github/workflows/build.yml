@@ -22,7 +22,7 @@ jobs:
       - name: Check toolchain versions
         run: butane --version; packer version
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: packer init
         run: packer init .
